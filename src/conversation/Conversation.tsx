@@ -1,22 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Message as MessageInterface, MessageSender } from "src/message/Constants";
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Message from "src/message/Message";
-import { Dimensions, ScrollView, StyleSheet, View, Text } from "react-native";
-import { ScrollIntoView, wrapScrollView } from "react-native-scroll-into-view";
+import { ScrollView, StyleSheet } from "react-native";
 
 interface Props {
   conversation: ConversationInterface;
 }
-
-const scrollOptions = {
-  align: "auto",
-  animated: true,
-  immediate: false,
-};
-
-// Wrap the original ScrollView
-const CustomScrollView = wrapScrollView(ScrollView);
 
 const Conversation = (props: Props) => {
   const { conversation } = props;
