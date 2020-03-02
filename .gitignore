@@ -9,6 +9,8 @@ npm-debug.*
 *.orig.*
 web-build/
 web-report/
+src/screens/story/fakeConversation.ts
+src/conf/firebaseConfig.ts
 
 # macOS
 .DS_Store

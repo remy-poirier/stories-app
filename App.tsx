@@ -1,72 +1,44 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
-import { Body, Container, Content, Header } from "native-base";
-import { Message as MessageInterface, MessageSender } from "./src/message/Constants";
-import Conversation from "src/conversation/Conversation";
-import { Conversation as ConversationInterface } from "src/conversation/Constants"
+import { StyleSheet} from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
 import StoryScreen from "src/screens/story/StoryScreen";
 import HomeScreen from "src/screens/home/HomeScreen";
-
+import { RootState } from "src/redux/reducer/mainReducer";
+import { Store } from "redux";
+import { configureStore } from "src/redux/store/configureStore";
+import { config } from "src/conf/config";
+import { Provider } from 'react-redux';
 
 const Stack = createStackNavigator<RootStackParamList>();
+
+const store: Store<RootState, any> = configureStore({});
 
 const App = () => {
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{
-            title: "Accueil"
-          }}
-        />
-        <Stack.Screen
-          name="Story"
-          component={StoryScreen}
-          options={{
-            title: "Un sentiment étrange"
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              title: "Accueil"
+            }}
+          />
+          <Stack.Screen
+            name="Story"
+            component={StoryScreen}
+            options={{
+              title: "Un sentiment étrange"
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   )
-
-  return (
-    <Container style={styles.container}>
-      <Header style={styles.header}>
-        <Body>
-          <Text style={styles.headerText}>
-            Discussion
-          </Text>
-        </Body>
-      </Header>
-      <Body style={styles.body}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="Home">
-            <Stack.Screen
-              name="Home"
-              component={HomeScreen}
-              options={{
-                title: "Accueil"
-              }}
-            />
-            <Stack.Screen
-              name="Story"
-              component={StoryScreen}
-              options={{
-                title: "Un sentiment étrange"
-              }}
-            />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </Body>
-    </Container>
-  );
 };
 
 const styles = StyleSheet.create({

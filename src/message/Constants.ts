@@ -6,6 +6,8 @@ export enum MessageSender {
 
 export interface Message {
   id: number;
-  message: string;
+  order: number;
+  text: string;
+  storyId: string;
   from: MessageSender;
 }

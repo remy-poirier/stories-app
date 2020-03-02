@@ -1,51 +1,71 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Content, Text, Body, Button, CardItem, Card } from "native-base";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, ScrollView } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
+import { Routes } from "src/redux/actions/GlobalActions";
+import globalConnect from "src/redux/actions/utils";
+import { RootState } from "src/redux/reducer/mainReducer";
+import { getStories } from "src/redux/selectors/storiesSelector";
+import { Story } from "src/models/Story";
 
 type HomeScreenNavigationProps = StackNavigationProp<RootStackParamList, "Home">;
 
 interface Props {
   navigation: HomeScreenNavigationProps;
+  actions: Routes;
+  stories: Story[];
 }
 
 const HomeScreen = (props: Props) => {
-  const { navigation } = props;
+  const { navigation, actions, stories } = props;
+
+  useEffect(() => {
+    actions.stories.fetch()
+      .then(() => {
+        console.log("dazdzadaz");
+      })
+  }, []);
+
   return (
-    <Body style={styles.bg}>
-      <Card style={styles.card}>
-        <CardItem header bordered style={styles.cardItem}>
-          <Body>
-            <Text style={styles.cardItemText}>Un sentiment étrange</Text>
-            <Text note style={styles.cardItemText}>Horreur</Text>
-          </Body>
-        </CardItem>
-        <CardItem bordered cardBody style={styles.cardItem}>
-          <Image
-            source={{uri: 'https://www.businessinsider.fr/content/uploads/2019/10/5db32ec3045a31111c3df084.jpeg'}}
-            style={{height: 200, width: null, flex: 1}}
-          />
-        </CardItem>
-        <CardItem style={styles.cardItem}>
-          <Text style={styles.cardDescription}>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias assumenda commodi dolore doloremque dolorum eaque enim officia, possimus similique voluptate! Dignissimos dolore est facere iure minus qui quis, rerum similique.</Text>
-        </CardItem>
-        <CardItem style={styles.cardItem}>
-          <Body>
-            <Button
-              primary
-              onPress={() => {
-                navigation.push("Story", {
-                  storyId: 1,
-                })
-              }}
-            >
-              <Text>Lire l'histoire</Text>
-            </Button>
-          </Body>
-        </CardItem>
-      </Card>
-    </Body>
+    <ScrollView
+      contentContainerStyle={styles.bgContentContainer}
+      style={styles.bg}
+    >
+      {stories.map((story) => (
+        <Card style={styles.card}>
+          <CardItem header bordered style={styles.cardItem}>
+            <Body>
+              <Text style={styles.cardItemText}>{story.name}</Text>
+              <Text note style={styles.cardItemText}>{story.category}</Text>
+            </Body>
+          </CardItem>
+          <CardItem bordered cardBody style={styles.cardItem}>
+            <Image
+              source={{uri: story.imageUrl}}
+              style={{height: 200, width: null, flex: 1}}
+            />
+          </CardItem>
+          <CardItem style={styles.cardItem}>
+            <Text style={styles.cardDescription}>{story.description}</Text>
+          </CardItem>
+          <CardItem style={styles.cardItem}>
+            <Body>
+              <Button
+                primary
+                onPress={() => {
+                  navigation.push("Story", {
+                    storyId: story.id,
+                  })
+                }}
+              >
+                <Text>Lire l'histoire</Text>
+              </Button>
+            </Body>
+          </CardItem>
+        </Card>
+      ))}
+    </ScrollView>
   );
 };
 
@@ -54,11 +74,15 @@ const styles = StyleSheet.create({
     color: "white",
   },
 
+  bgContentContainer: {
+    justifyContent: "flex-start",
+    paddingBottom: 32,
+  },
+
   bg: {
     flex: 1,
     width: "100%",
     display: "flex",
-    justifyContent: "flex-start",
     backgroundColor: "#121212",
     paddingHorizontal: 8,
   },
@@ -68,6 +92,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     borderColor: "transparent",
     borderWidth: 3,
+    marginBottom: 16,
   },
 
   cardItem: {
@@ -85,4 +110,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+const stateToProps = (state: RootState) => ({
+  stories: getStories(state),
+});
+
+export default globalConnect(stateToProps)(HomeScreen);

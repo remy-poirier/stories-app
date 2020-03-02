@@ -3,15 +3,19 @@ import { Message as MessageInterface, MessageSender } from "src/message/Constant
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Message from "src/message/Message";
 import { ScrollView, StyleSheet } from "react-native";
+import { Body, Button, Text } from "native-base";
+import FadeInView from "src/common/fadeInView/FadeInView";
 
 interface Props {
   conversation: ConversationInterface;
+  onGoBackToHome: () => void;
 }
 
 const Conversation = (props: Props) => {
-  const { conversation } = props;
+  const { conversation, onGoBackToHome } = props;
 
   const [displayedMessage, setDisplayedMessage] = useState<number>(0);
+  const [isStoryEnded, setIsStoryEnded] = useState<boolean>(false);
   const [isScrolling, setIsScrolling] = useState<boolean>(false);
   let scrollViewRef = null;
 
@@ -25,6 +29,10 @@ const Conversation = (props: Props) => {
       setDisplayedMessage((previousDisplayedMessage) => {
         if (previousDisplayedMessage + 1 < conversation.messages.length) {
           return previousDisplayedMessage + 1
+        }
+
+        if (previousDisplayedMessage + 1 === conversation.messages.length) {
+          setIsStoryEnded(true)
         }
 
         return 0;
@@ -58,8 +66,23 @@ const Conversation = (props: Props) => {
   };
 
   const onScroll = (isScrollingNow: boolean) => () => {
-    console.log("on SCROLL CALLED");
     setIsScrolling(isScrollingNow);
+  };
+
+  if (isStoryEnded) {
+    return (
+      <Body style={styles.endContainer}>
+        <FadeInView>
+          <Text style={styles.endStory}>FIN</Text>
+
+          <Button primary onPress={onGoBackToHome}>
+            <Text>
+              Retour à l'accueil
+            </Text>
+          </Button>
+        </FadeInView>
+      </Body>
+    )
   }
 
   return (
@@ -108,6 +131,20 @@ const styles = StyleSheet.create({
   scrollView: {
     display: "flex",
     flexDirection: "column",
+  },
+
+  endContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
+
+  endStory: {
+    fontSize: 60,
+    color: "white",
+    textAlign: "center",
+    marginBottom: 16,
   }
 });
 

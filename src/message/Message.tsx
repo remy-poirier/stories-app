@@ -3,7 +3,6 @@ import { StyleSheet, View } from "react-native";
 import { Text } from "native-base";
 import { Message as MessageInterface, MessageSender } from "src/message/Constants";
 import FadeInView from "src/common/fadeInView/FadeInView";
-import { ScrollIntoView } from "react-native-scroll-into-view";
 
 interface Props {
   message: MessageInterface;
@@ -34,7 +33,7 @@ const Message = (props: Props) => {
           ...(message.from === MessageSender.Narrator) && {
             ...styles.narratorText
           },
-        }} >{message.message}</Text>
+        }} >{message.text}</Text>
       </View>
       {(isLastOfSender && message.from !== MessageSender.Narrator) && (
         <View style={styles.nameContainer}>

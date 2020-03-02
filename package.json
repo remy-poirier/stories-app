@@ -13,7 +13,9 @@
     "@react-navigation/native": "^5.0.8",
     "@react-navigation/stack": "^5.1.0",
     "expo": "~36.0.0",
+    "firebase": "7.9.0",
     "native-base": "^2.13.8",
+    "re-reselect": "^3.4.0",
     "react": "16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "0.61.5",
@@ -22,7 +24,14 @@
     "react-native-safe-area-context": "0.6.0",
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-scroll-into-view": "^1.0.3",
-    "react-native-web": "~0.11.7"
+    "react-native-web": "~0.11.7",
+    "react-redux": "^7.2.0",
+    "recompose": "^0.30.0",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "reselect": "^4.0.0",
+    "typesafe-actions": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
