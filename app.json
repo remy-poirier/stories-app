@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Story Application",
-    "slug": "storyApp",
+    "name": "Thrilled",
+    "slug": "thrilled",
     "privacy": "public",
     "sdkVersion": "36.0.0",
     "platforms": [
@@ -24,7 +24,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    }
+      "supportsTablet": true,
+      "bundleIdentifier": "com.remypoirier.thrilled",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.remypoirier.thrilled",
+      "versionCode": 1
+    },
+    "description": "This is a very simple application displaying some stories to users. For now, all the application is in French",
+    "githubUrl": "https://github.com/remy-poirier/stories-app"
   }
 }
