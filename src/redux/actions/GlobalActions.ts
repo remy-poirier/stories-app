@@ -7,6 +7,7 @@ import { Message } from "src/message/Constants";
 const actions = {
   stories: {
     fetch: () => (dispatch: any) => db.collection("stories")
+      .where("isVisible", "==", true)
       .get()
       .then((querySnapshot) => {
         const stories: Story[] = [];
@@ -52,7 +53,13 @@ const actions = {
 
         return finalObject;
 
+      }),
+
+    reset: () => (dispatch: any) => {
+      return dispatch({
+        type: ActionTypes.Conversation.RESET,
       })
+    }
   }
 };
 

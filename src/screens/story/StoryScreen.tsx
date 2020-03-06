@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
 import { RouteProp } from "@react-navigation/native"
-import { Body } from "native-base";
+import { Body, Spinner } from "native-base";
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Conversation from "src/conversation/Conversation";
 import { StyleSheet } from "react-native";
@@ -24,13 +24,20 @@ interface Props {
 const StoryScreen = (props: Props) => {
   const { route, actions, conversation, navigation } = props;
 
+  const [fetchConversation, setFetchConversation] = useState<boolean>(true);
+
   useEffect(() => {
-    console.log("on appelle ca");
+    setFetchConversation(true);
+    actions.conversation.reset();
     actions.conversation.get(route.params.storyId)
-      .then((doc: any) => {
-        console.log("nianiania le doc => ", doc);
-      })
+      .then(() => setFetchConversation(false))
   }, []);
+
+  useEffect(() => {
+    navigation.setOptions({
+      title: conversation.name
+    })
+  }, [conversation]);
 
   const onGoBackToHome = () => {
     navigation.navigate("Home")
@@ -38,10 +45,13 @@ const StoryScreen = (props: Props) => {
 
   return (
     <Body style={styles.bg}>
-      <Conversation
-        conversation={conversation}
-        onGoBackToHome={onGoBackToHome}
-      />
+      {fetchConversation && <Spinner />}
+      {!fetchConversation && (
+        <Conversation
+          conversation={conversation}
+          onGoBackToHome={onGoBackToHome}
+        />
+      )}
     </Body>
   );
 };

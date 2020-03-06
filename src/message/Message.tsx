@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Text } from "native-base";
 import { Message as MessageInterface, MessageSender } from "src/message/Constants";
 import FadeInView from "src/common/fadeInView/FadeInView";
+import { appTheme } from "src/common/styles/styles";
 
 interface Props {
   message: MessageInterface;
@@ -80,7 +81,7 @@ const Message = (props: Props) => {
 const styles = StyleSheet.create({
   msgContainer: {
     borderRadius: 24,
-    backgroundColor: "#3d5afe",
+    backgroundColor: appTheme.primaryColor,
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginVertical: 4,

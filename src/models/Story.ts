@@ -6,4 +6,7 @@ export interface Story {
   category: string;
   witnessName: string;
   victimName: string;
+  authorName: string;
+  authorId: string;
+  isVisible: boolean;
 }

@@ -22,6 +22,8 @@ export default function(state = initialState, action: any): State {
         ...state,
         ...action.payload,
       };
+    case ActionTypes.Conversation.RESET:
+      return initialState;
     default:
       return state;
   }

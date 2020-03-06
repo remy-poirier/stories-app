@@ -4,18 +4,24 @@
     "slug": "thrilled",
     "privacy": "public",
     "sdkVersion": "36.0.0",
+    "backgroundColor": "#121212",
     "platforms": [
       "ios",
       "android",
       "web"
     ],
-    "version": "1.0.0",
+    "version": "1.0.5",
     "orientation": "portrait",
+    "primaryColor": "#3d5afe",
     "icon": "./assets/icon.png",
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#121212"
+    },
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "resizeMode": "cover",
+      "backgroundColor": "#303f9f"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -26,11 +32,13 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.remypoirier.thrilled",
-      "buildNumber": "1.0.0"
+      "buildNumber": "1.0.5",
+      "icon": "./assets/icon.png"
     },
     "android": {
       "package": "com.remypoirier.thrilled",
-      "versionCode": 1
+      "versionCode": 6,
+      "permissions": []
     },
     "description": "This is a very simple application displaying some stories to users. For now, all the application is in French",
     "githubUrl": "https://github.com/remy-poirier/stories-app"

@@ -5,5 +5,6 @@ export const ActionTypes = Object.freeze({
 
   Conversation: {
     RECEIVE: "CONVERSATION/RECEIVE",
+    RESET: "CONVERSATION/RESET",
   },
 });
