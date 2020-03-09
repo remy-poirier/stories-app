@@ -7,8 +7,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
 import { Routes } from "src/redux/actions/GlobalActions";
 import { Story } from "src/models/Story";
-import { Body, Button, Card, CardItem, Spinner, Text } from "native-base";
-import { appTheme } from "src/common/styles/styles";
+import { Body, Button, Card, CardItem, Icon, Spinner, Text } from "native-base";
+import { appCommonStyles, appTheme } from "src/common/styles/styles";
 
 type HomeScreenNavigationProps = StackNavigationProp<RootStackParamList, "Home">;
 
@@ -38,14 +38,14 @@ const StoriesList = (props: Props) => {
           setFetchStories(false)
         })
     }
-  }, [fetchStories, stories])
+  }, [fetchStories, stories]);
 
   return (
     <ScrollView
       contentContainerStyle={styles.bgContentContainer}
       style={styles.bg}
     >
-      {fetchStories && <Spinner /> }
+      {fetchStories && <Spinner color={appTheme.primaryColor} /> }
       {!fetchStories && stories.map((story) => (
         <Card style={styles.card} key={story.id}>
           <CardItem header bordered style={styles.cardItem}>
@@ -63,6 +63,12 @@ const StoriesList = (props: Props) => {
           </CardItem>
           <CardItem style={styles.cardItem}>
             <Text style={styles.cardDescription}>{story.description}</Text>
+          </CardItem>
+          <CardItem style={{...styles.cardItem, alignItems: "center", display: "flex", flexDirection: "row"}}>
+            <Icon name="thumbs-up" style={{color: appTheme.primaryColor}} />
+            <Text style={appCommonStyles.text}>
+               {story.nbLikes || 0}
+            </Text>
           </CardItem>
           <CardItem style={styles.cardItem}>
             <Body>
@@ -126,6 +132,7 @@ const styles = StyleSheet.create({
   cardItem: {
     backgroundColor: "#333",
     borderRadius: 0,
+    display: "flex",
   },
 
   cardItemText: {

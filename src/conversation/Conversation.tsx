@@ -3,16 +3,20 @@ import { Message as MessageInterface, MessageSender } from "src/message/Constant
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Message from "src/message/Message";
 import { ScrollView, StyleSheet } from "react-native";
-import { Body, Button, Text } from "native-base";
+import { Body, Button, Icon, Text, View } from "native-base";
 import FadeInView from "src/common/fadeInView/FadeInView";
+import { appCommonStyles } from "src/common/styles/styles";
+import globalConnect from "src/redux/actions/utils";
 
 interface Props {
   conversation: ConversationInterface;
   onGoBackToHome: () => void;
+  onLike: () => void;
+  user: any;
 }
 
 const Conversation = (props: Props) => {
-  const { conversation, onGoBackToHome } = props;
+  const { conversation, onGoBackToHome, onLike, user } = props;
 
   const [displayedMessage, setDisplayedMessage] = useState<number>(0);
   const [isStoryEnded, setIsStoryEnded] = useState<boolean>(false);
@@ -32,10 +36,9 @@ const Conversation = (props: Props) => {
         }
 
         if (previousDisplayedMessage + 1 === conversation.messages.length) {
-          setIsStoryEnded(true)
+          setIsStoryEnded(true);
+          return previousDisplayedMessage
         }
-
-        return 0;
       })
     }
   };
@@ -69,21 +72,6 @@ const Conversation = (props: Props) => {
     setIsScrolling(isScrollingNow);
   };
 
-  if (isStoryEnded) {
-    return (
-      <Body style={styles.endContainer}>
-        <FadeInView>
-          <Text style={styles.endStory}>FIN</Text>
-
-          <Button primary onPress={onGoBackToHome}>
-            <Text>
-              Retour à l'accueil
-            </Text>
-          </Button>
-        </FadeInView>
-      </Body>
-    )
-  }
 
   return (
     <ScrollView
@@ -108,6 +96,35 @@ const Conversation = (props: Props) => {
             )
           }
         })}
+
+      {isStoryEnded && (
+        <FadeInView style={styles.storyEndedContainer}>
+          <Text style={styles.endStory}>FIN</Text>
+          <Button primary onPress={onGoBackToHome}>
+            <Text>
+              Retour à l'accueil
+            </Text>
+          </Button>
+          <Text style={{...appCommonStyles.text, ...appCommonStyles.baseMTop}}>Avez-vous apprécié cette histoire ?</Text>
+          <View style={styles.likesContainer}>
+            {user && (
+              <Button
+                bordered={!conversation.isLiked}
+                style={styles.likeButton}
+                onPress={onLike}
+              >
+                <Icon name="thumbs-up" />
+              </Button>
+            )}
+
+            {!user && (
+              <Text style={{...appCommonStyles.text, textAlign: "center"}}>
+                Connectez-vous pour avoir la possibilité de liker les histoires
+              </Text>
+            )}
+          </View>
+        </FadeInView>
+      )}
     </ScrollView>
   )
 };
@@ -145,6 +162,26 @@ const styles = StyleSheet.create({
     color: "white",
     textAlign: "center",
     marginBottom: 16,
+  },
+
+  storyEndedContainer: {
+    display: "flex",
+    width: "100%",
+    alignItems: "center",
+    flex: 1,
+    textAlign: "center",
+  },
+
+  likesContainer: {
+    display: "flex",
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 16,
+  },
+
+  likeButton: {
+    marginHorizontal: 8,
   }
 });
 

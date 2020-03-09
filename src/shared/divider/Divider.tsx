@@ -13,6 +13,8 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "white",
     marginVertical: 8,
+    borderWidth: 1,
+    borderColor: "white",
   },
 });
 

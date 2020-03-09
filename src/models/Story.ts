@@ -9,4 +9,5 @@ export interface Story {
   authorName: string;
   authorId: string;
   isVisible: boolean;
+  nbLikes: number;
 }

@@ -1,4 +1,9 @@
 export const ActionTypes = Object.freeze({
+  User: {
+    STATUS_UPDATE: "USER/STATUS_UPDATE",
+    RECEIVE_NB_OF_STORIES: "USER/RECEIVE_NB_OF_STORIES",
+  },
+
   Stories: {
     RECEIVE_ALL: "STORIES/RECEIVE",
   },
@@ -6,5 +11,8 @@ export const ActionTypes = Object.freeze({
   Conversation: {
     RECEIVE: "CONVERSATION/RECEIVE",
     RESET: "CONVERSATION/RESET",
+    LIKE: "CONVERSATION/LIKE",
+    DISLIKE: "CONVERSATION/DISLIKE",
+    CONNECTED_USER_HAS_LIKED: "CONVERSATION/CONNECTED_USER_HAS_LIKED",
   },
 });
