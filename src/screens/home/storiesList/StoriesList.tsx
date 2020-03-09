@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
 import { Routes } from "src/redux/actions/GlobalActions";
 import { Story } from "src/models/Story";
-import { Body, Button, Card, CardItem, Icon, Spinner, Text } from "native-base";
+import { Body, Button, Card, CardItem, Icon, Spinner, Text, View } from "native-base";
 import { appCommonStyles, appTheme } from "src/common/styles/styles";
 
 type HomeScreenNavigationProps = StackNavigationProp<RootStackParamList, "Home">;
@@ -22,6 +22,7 @@ const StoriesList = (props: Props) => {
   const { navigation, actions, stories } = props;
 
   const [fetchStories, setFetchStories] = useState<boolean>(true);
+  const [isScrolling, setIsScrolling] = useState<boolean>(false);
 
   useEffect(() => {
     actions.stories.fetch()
@@ -40,52 +41,104 @@ const StoriesList = (props: Props) => {
     }
   }, [fetchStories, stories]);
 
+  const onStoryClick = (storyId: string) => () => {
+    if (!isScrolling) {
+      navigation.push("Story", {
+        storyId,
+      })
+    }
+  };
+
+  const onScroll = (isScrollingNow: boolean) => () => {
+    setIsScrolling(isScrollingNow);
+  };
+
   return (
     <ScrollView
       contentContainerStyle={styles.bgContentContainer}
       style={styles.bg}
+      onScrollBeginDrag={onScroll(true)}
+      onScrollEndDrag={onScroll(false)}
     >
       {fetchStories && <Spinner color={appTheme.primaryColor} /> }
       {!fetchStories && stories.map((story) => (
-        <Card style={styles.card} key={story.id}>
-          <CardItem header bordered style={styles.cardItem}>
-            <Body>
-              <Text style={styles.cardItemTitle}>{story.name}</Text>
-              <Text note style={styles.cardItemText}>{story.category}</Text>
-              <Text note style={styles.cardItemText}>Ecrit par: {story.authorName}</Text>
-            </Body>
-          </CardItem>
-          <CardItem bordered cardBody style={styles.cardItem}>
-            <Image
-              source={{uri: story.imageUrl}}
-              style={{height: 200, width: null, flex: 1}}
-            />
-          </CardItem>
-          <CardItem style={styles.cardItem}>
-            <Text style={styles.cardDescription}>{story.description}</Text>
-          </CardItem>
-          <CardItem style={{...styles.cardItem, alignItems: "center", display: "flex", flexDirection: "row"}}>
-            <Icon name="thumbs-up" style={{color: appTheme.primaryColor}} />
-            <Text style={appCommonStyles.text}>
-               {story.nbLikes || 0}
-            </Text>
-          </CardItem>
-          <CardItem style={styles.cardItem}>
-            <Body>
-              <Button
-                style={styles.btn}
-                primary
-                onPress={() => {
-                  navigation.push("Story", {
-                    storyId: story.id,
-                  })
-                }}
+        <>
+          <Card onTouchEnd={onStoryClick(story.id)} style={styles.card} key={`${story.id}-new`}>
+            <CardItem
+              bordered
+              cardBody
+              style={styles.storyCard}>
+
+              <Image
+                source={{ url: story.imageUrl }}
+                style={styles.storyCardImage}
+              />
+              <View
+                style={styles.storyCardOverflow}
               >
-                <Text>Lire l'histoire</Text>
-              </Button>
-            </Body>
-          </CardItem>
-        </Card>
+                <Text
+                  style={styles.storyTitle}
+                  numberOfLines={1}
+                >{story.name}</Text>
+                <Text note>
+                  Par: {story.authorName}
+                </Text>
+                <Text note>
+                  Genre: {story.category}
+                </Text>
+                <Text numberOfLines={5} style={{...appCommonStyles.baseMTop, ...appCommonStyles.text}}>
+                  {story.description}
+                </Text>
+                <View style={{display: "flex", flexDirection: "row", alignItems: "center", marginTop: 16}}>
+                  <Icon name="thumbs-up" style={{color: appTheme.primaryColor, marginRight: 16,}} />
+                  <Text style={appCommonStyles.text}>
+                    {story.nbLikes || 0}
+                  </Text>
+                </View>
+              </View>
+            </CardItem>
+          </Card>
+          <Card style={styles.card} key={story.id}>
+            <CardItem header bordered style={styles.cardItem}>
+              <Body>
+                <Text style={styles.cardItemTitle}>{story.name}</Text>
+                <Text note style={styles.cardItemText}>{story.category}</Text>
+                <Text note style={styles.cardItemText}>Ecrit par: {story.authorName}</Text>
+              </Body>
+            </CardItem>
+            <CardItem bordered cardBody style={styles.cardItem}>
+              <Image
+                source={{uri: story.imageUrl}}
+                style={{height: 200, width: null, flex: 1}}
+              />
+            </CardItem>
+            <CardItem style={styles.cardItem}>
+              <Text style={styles.cardDescription}>{story.description}</Text>
+            </CardItem>
+            <CardItem style={styles.storyCardActions}>
+              <Icon name="thumbs-up" style={{color: appTheme.primaryColor}} />
+              <Text style={appCommonStyles.text}>
+                {story.nbLikes || 0}
+              </Text>
+            </CardItem>
+            <CardItem style={styles.cardItem}>
+              <Body>
+                <Button
+                  style={styles.btn}
+                  primary
+                  onPress={() => {
+                    navigation.push("Story", {
+                      storyId: story.id,
+                    })
+                  }}
+                >
+                  <Text>Lire l'histoire</Text>
+                </Button>
+              </Body>
+            </CardItem>
+          </Card>
+        </>
+
       ))}
 
     </ScrollView>
@@ -98,6 +151,45 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
     fontSize: 20,
+  },
+
+  storyCard: {
+    height: 400,
+    position: "relative",
+    display: "flex",
+    flexDirection: "column",
+  },
+
+  storyTitle: {
+    ...appCommonStyles.text,
+    fontSize: 25,
+    fontWeight: "bold",
+    ...appCommonStyles.baseMBottom
+  },
+
+  storyCardOverflow: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 0,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    display: "flex",
+    justifyContent: "flex-end",
+    padding: 16,
+  },
+
+  storyCardActions: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 16
+  },
+
+  storyCardImage: {
+    height: 400,
+    width: "100%",
+    flex: 1,
   },
 
   text: {
@@ -142,7 +234,7 @@ const styles = StyleSheet.create({
   cardDescription: {
     color: "#9e9e9e",
     fontStyle: "italic",
-  }
+  },
 });
 
 const stateToProps = (state: RootState) => ({

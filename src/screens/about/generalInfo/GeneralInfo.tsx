@@ -18,7 +18,7 @@ const GeneralInfo = () => {
 
       <Divider />
 
-      <Text style={styles.sectionTitle}>Comment ajouter une nouvelle histoire</Text>
+      <Text style={styles.sectionTitle}>Comment ajouter une nouvelle histoire ?</Text>
 
       <Text style={styles.text}>
         L'ajout et l'édition d'histoire se déroule via le site internet dédié à cette application auquel
@@ -31,9 +31,9 @@ const GeneralInfo = () => {
       </Button>
 
       <Text style={styles.text}>
-        Il n'est pas possible d'ajouter des histoires pour le moment via l'application, et ce n'est pas non plus prévu dans un futur
-        proche. L'application a été créée récemment, et toutes les fonctionnalités ne sont pas encore disponibles
-        nativement.
+        Il n'est pas possible d'ajouter des histoires pour le moment via l'application, et ce n'est pas non plus
+        prévu dans un futur proche. L'application a été créée récemment, et d'autres fonctionnalités arrivent
+        prochainement (filtres sur les histoires, ajout en favori, etc...)
       </Text>
     </View>
   );

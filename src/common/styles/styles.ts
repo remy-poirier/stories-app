@@ -39,6 +39,10 @@ export const appCommonStyles = StyleSheet.create({
     marginTop: 16,
   },
 
+  baseMBottom: {
+    marginBottom: 16,
+  },
+
   card: {
     backgroundColor: "#333",
     paddingHorizontal: 16,

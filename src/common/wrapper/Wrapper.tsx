@@ -23,13 +23,16 @@ const Wrapper = (props: Props) => {
   const [hasFetchUser, setHasFetchUser] = useState<boolean>(false);
 
   useEffect(() => {
-    if (auth.currentUser) {
-      actions.user.fetchUser(auth.currentUser.email)
-        .then(() => setFetchUser(false))
-        .catch(() => setFetchUser(false));
-    } else {
-      setFetchUser(false)
-    }
+
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        actions.user.fetchUser(user.email)
+          .then(() => setFetchUser(false))
+          .catch(() => setFetchUser(false));
+      } else {
+        setFetchUser(false);
+      }
+    });
   }, []);
 
   const isTabBarVisible = (route: any): boolean => {
