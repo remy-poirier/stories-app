@@ -10,4 +10,7 @@ export interface Story {
   authorId: string;
   isVisible: boolean;
   nbLikes: number;
+  readList: string[];
+  nbReads: number;
+  messages: [];
 }

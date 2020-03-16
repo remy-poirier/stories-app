@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     display: "flex",
-    backgroundColor: appTheme.backgroundColor,
+    backgroundColor: appTheme.background.default,
     paddingHorizontal: 8,
     paddingVertical: 8,
   },

@@ -7,6 +7,15 @@ export interface Conversation {
   witnessName: string;
   name: string;
   isLiked: boolean;
+  description: string;
+  imageUrl: string;
+  category: string;
+  authorName: string;
+  authorId: string;
+  isVisible: boolean;
+  nbLikes: number;
+  readList: string[];
+  nbReads: number;
 }
 
 export const defaultConversation = (): Conversation => ({
@@ -16,4 +25,13 @@ export const defaultConversation = (): Conversation => ({
   witnessName: "",
   name: "",
   isLiked: false,
+  description: "",
+  authorId: "",
+  authorName: "",
+  category: "",
+  imageUrl: "",
+  isVisible: false,
+  nbLikes: 0,
+  nbReads: 0,
+  readList: []
 });

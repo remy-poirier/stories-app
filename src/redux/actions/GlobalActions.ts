@@ -5,7 +5,7 @@ import { ActionTypes } from "src/redux/actions/ActionTypes";
 import { Message } from "src/message/Constants";
 import { User } from "src/models/User";
 import { LikeTypes } from "src/models/Like";
-import { guidGenerator } from "src/common/utils";
+import { guidGenerator, mapQuerySnapshotToStories } from "src/common/utils";
 import { Conversation, defaultConversation } from "src/conversation/Constants";
 
 const actions = {
@@ -65,6 +65,7 @@ const actions = {
           type:    ActionTypes.User.STATUS_UPDATE,
           payload: null,
         });
+        return true;
       }),
 
     login: (email: string, password: string) => () => {
@@ -89,9 +90,26 @@ const actions = {
         .catch((error) => {
           throw error;
         })
+    },
+    
+    getStoriesToReadLater: () => (dispatch: any) => {
+      return db.collection("stories")
+        .where("readList", "array-contains", auth.currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+          const stories = mapQuerySnapshotToStories(querySnapshot);
+          
+          dispatch({
+            type: ActionTypes.User.RECEIVE_READLIST,
+            payload: stories,
+          });
+          
+          return stories;
+        })
+        .catch((error) => {
+          throw error;
+        })
     }
-
-
   },
 
   stories: {
@@ -99,17 +117,134 @@ const actions = {
       .where("isVisible", "==", true)
       .get()
       .then((querySnapshot) => {
-        const stories: Story[] = [];
-        querySnapshot.forEach((doc) => {
-          const s = doc.data() as Story;
-          stories.push(s);
-        });
+        const stories = mapQuerySnapshotToStories(querySnapshot);
         dispatch({
           type: ActionTypes.Stories.RECEIVE_ALL,
           payload: stories,
         });
         return stories;
       }),
+    
+    defineAsRead: (storyId: string) => (dispatch: any) => {
+      // Check if user has already read story first
+      return db.collection("storyViews")
+        .where("userId", "==", auth.currentUser.uid)
+        .where("storyId", "==", storyId)
+        .get()
+        .then((querySnapshot) => {
+          if (querySnapshot.size > 0) {
+            // Story already read, simply do nothing
+            return true;
+          }
+  
+          return db.collection("storyViews")
+            .add({
+              id:      guidGenerator(),
+              storyId: storyId,
+              userId:  auth.currentUser.uid,
+            })
+            .then(() => {
+              db.collection("stories")
+                .doc(storyId)
+                .get()
+                .then((document) => {
+                  const story = document.data() as Story;
+                  return db.collection("stories")
+                    .doc(storyId)
+                    .set({
+                      ...story,
+                      nbReads: story.nbReads + 1
+                    })
+                    .then(() => {
+                      dispatch({
+                        type: ActionTypes.Stories.INCREMENT_NB_VIEWS,
+                        payload: story.id
+                      });
+    
+                      return true;
+                    })
+                    .catch((error) => {
+                      throw error;
+                    })
+                })
+                .catch((error) => {
+                  throw error;
+                })
+              
+            })
+            .catch((error) => {
+              throw error;
+            })
+        })
+    },
+    
+    addToList: (story: Story) => (dispatch: any) => {
+      return db.collection("readList")
+        .add({
+          id:      guidGenerator(),
+          storyId: story.id,
+          userId:  auth.currentUser.uid,
+        })
+        .then(() => {
+          const readList = [...story.readList, auth.currentUser.uid]
+          db.collection("stories")
+            .doc(story.id)
+            .set({
+              ...story,
+              readList,
+            })
+            .then(() => {
+              dispatch({
+                type: ActionTypes.Stories.ADD_TO_READLIST,
+                payload: {
+                  story,
+                  readList,
+                },
+              });
+              return true;
+            })
+            .catch((error) => {
+              throw error;
+            })
+        })
+    },
+    
+    removeFromList: (story: Story) => (dispatch: any) => {
+      return db.collection("readList")
+        .where("userId", "==", auth.currentUser.uid)
+        .where("storyId", "==", story.id)
+        .get()
+        .then((querySnapshot) => {
+          if (querySnapshot.size > 0) {
+            return db.collection("readList")
+              .doc(querySnapshot.docs[0].id)
+              .delete()
+              .then(() => {
+                const readList = story.readList.filter((userId) => userId !== auth.currentUser.uid)
+                return db.collection("stories")
+                  .doc(story.id)
+                  .set({
+                    ...story,
+                    readList
+                  })
+                  .then(() => {
+                    dispatch({
+                      type: ActionTypes.Stories.REMOVE_FROM_READLIST,
+                      payload: {
+                        story,
+                        readList,
+                      }
+                    });
+                    
+                    return true
+                  })
+                  .catch((error) => {
+                    throw error;
+                  })
+              })
+          }
+        })
+    }
   },
 
   conversation: {

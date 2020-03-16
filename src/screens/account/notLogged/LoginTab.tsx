@@ -50,7 +50,13 @@ const LoginTab = (props: Props) => {
             setIsLoading(false);
             onAuthSuccess();
           })
-          .catch(() => setIsLoading(false));
+          .catch(() => {
+            setIsLoading(false);
+            Toast.show({
+              text: "Nom d'utilisateur ou mot de passe incorrect",
+              type: "danger",
+            })
+          });
 
       } else {
         if (data.email && !isEmailValid(data.email.value)) {
@@ -60,6 +66,11 @@ const LoginTab = (props: Props) => {
         if (data.fieldPwd && isPwdValid(data.fieldPwd.value)) {
           setError("fieldPwd", "validity", "Mot de passe incorrect");
         }
+  
+        Toast.show({
+          text: "Le formulaire contient des erreurs",
+          type: "danger",
+        })
       }
     } else {
       Toast.show({
@@ -101,6 +112,7 @@ const LoginTab = (props: Props) => {
         defaultValue=""
         secureTextEntry
       />
+      
       {errors.fieldPwd && (
         <Text style={appCommonStyles.textError}>
           {errors.fieldPwd ? errors.fieldPwd.message : ""}
@@ -128,6 +140,9 @@ const styles = StyleSheet.create({
   input: {
     color: "white",
     borderWidth: 2,
+    borderTopColor: "transparent",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
     borderBottomColor: "white",
     height: 40,
   },

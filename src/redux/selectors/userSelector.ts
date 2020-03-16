@@ -1,5 +1,5 @@
-import { RootState } from "redux/reducer/mainReducer";
 import { createSelector } from 'reselect';
+import { RootState } from "../reducer/mainReducer";
 
 const extractUser = (state: RootState) => state.user.user;
 const userSelector = createSelector(
@@ -16,4 +16,12 @@ const nbOfPublishedStoriesSelector = createSelector(
 );
 
 export const getNbOfPublishedStories = (state: RootState) => nbOfPublishedStoriesSelector(state);
+
+const extractReadList = (state: RootState) => state.user.readList;
+const readListSelector = createSelector(
+  extractReadList,
+  (readList) => readList,
+);
+
+export const getUserReadList = (state: RootState) => readListSelector(state);
 

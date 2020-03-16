@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { RootStackParamList } from "src/common/typeRoutes/Constants";
 import StoryScreen from "src/screens/story/StoryScreen";
-import StoriesList from "src/screens/home/storiesList/StoriesList";
+import StoriesList from "src/screens/home/list/HomeList";
 import { StyleSheet } from "react-native";
 import { appTheme } from "src/common/styles/styles";
 
@@ -36,7 +36,7 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: appTheme.backgroundColor,
+    backgroundColor: appTheme.background.default,
   },
 
   headerTitle: {

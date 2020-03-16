@@ -20,7 +20,6 @@ interface Props {
 const Wrapper = (props: Props) => {
   const { actions } = props;
   const [fetchUser, setFetchUser] = useState<boolean>(true);
-  const [hasFetchUser, setHasFetchUser] = useState<boolean>(false);
 
   useEffect(() => {
 

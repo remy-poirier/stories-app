@@ -5,12 +5,12 @@ import { appCommonStyles, appTheme } from "src/common/styles/styles";
 import LoginTab from "src/screens/account/notLogged/LoginTab";
 import SigninTab from "src/screens/account/notLogged/SigninTab";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { AccounStackParamList } from "src/common/typeRoutes/Constants";
+import { AccountStackParamList } from "src/common/typeRoutes/Constants";
 import globalConnect from "src/redux/actions/utils";
 import { Routes } from "src/redux/actions/GlobalActions";
 import { auth } from "src/conf/firebase";
 
-type NotLoggedScreenNavigationProps = StackNavigationProp<AccounStackParamList, "Authentication">;
+type NotLoggedScreenNavigationProps = StackNavigationProp<AccountStackParamList, "Authentication">;
 
 interface Props {
   navigation: NotLoggedScreenNavigationProps;
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
   },
 
   tab: {
-    backgroundColor: appTheme.backgroundColor,
+    backgroundColor: appTheme.background.default,
   },
 });
 

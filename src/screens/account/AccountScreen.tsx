@@ -6,7 +6,9 @@ import { appTheme } from "src/common/styles/styles";
 import { RootState } from "src/redux/reducer/mainReducer";
 import { getUser } from "src/redux/selectors/userSelector";
 import NotLoggedScreen from "src/screens/account/notLogged/NotLoggedScreen";
-import LoggedScreen from "src/screens/account/logged/LoggedScreen";
+import ProfileScreen from "./logged/profile/ProfileScreen";
+import ReadList from "./logged/readList/ReadList";
+import StoryScreen from "./logged/story/StoryScreen";
 
 interface Props {
   user: any;
@@ -25,12 +27,28 @@ const AccountScreen = (props: Props) => {
         headerTintColor: "white",
       }}
     >
-
+  
       <AccountStack.Screen
         name="Profile"
-        component={LoggedScreen}
+        component={ProfileScreen}
         options={{
-          title: "Mon compte"
+          title: "Profil"
+        }}
+      />
+  
+      <AccountStack.Screen
+        name="ReadList"
+        component={ReadList}
+        options={{
+          title: "Ma liste"
+        }}
+      />
+  
+      <AccountStack.Screen
+        name="Story"
+        component={StoryScreen}
+        options={{
+          title: "Chargement..."
         }}
       />
 
@@ -48,7 +66,7 @@ const AccountScreen = (props: Props) => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: appTheme.backgroundColor,
+    backgroundColor: appTheme.background.default,
   },
 
   headerTitle: {

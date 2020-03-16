@@ -28,7 +28,7 @@ const AboutScreen = () => {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: appTheme.backgroundColor,
+    backgroundColor: appTheme.background.default,
   },
 
   headerTitle: {

@@ -3,20 +3,25 @@ import { Message as MessageInterface, MessageSender } from "src/message/Constant
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Message from "src/message/Message";
 import { ScrollView, StyleSheet } from "react-native";
-import { Body, Button, Icon, Text, View } from "native-base";
+import { Body, Button, Icon, Text, Toast, View } from "native-base";
 import FadeInView from "src/common/fadeInView/FadeInView";
 import { appCommonStyles } from "src/common/styles/styles";
 import globalConnect from "src/redux/actions/utils";
+import { RootState } from "../redux/reducer/mainReducer";
+import { getConversation } from "../redux/selectors/conversationSelector";
+import { getUser } from "../redux/selectors/userSelector";
+import { Routes } from "../redux/actions/GlobalActions";
 
 interface Props {
   conversation: ConversationInterface;
   onGoBackToHome: () => void;
   onLike: () => void;
   user: any;
+  actions: Routes;
 }
 
 const Conversation = (props: Props) => {
-  const { conversation, onGoBackToHome, onLike, user } = props;
+  const { conversation, onGoBackToHome, user, actions } = props;
 
   const [displayedMessage, setDisplayedMessage] = useState<number>(0);
   const [isStoryEnded, setIsStoryEnded] = useState<boolean>(false);
@@ -37,6 +42,7 @@ const Conversation = (props: Props) => {
 
         if (previousDisplayedMessage + 1 === conversation.messages.length) {
           setIsStoryEnded(true);
+          actions.stories.defineAsRead(conversation.id);
           return previousDisplayedMessage
         }
       })
@@ -71,8 +77,27 @@ const Conversation = (props: Props) => {
   const onScroll = (isScrollingNow: boolean) => () => {
     setIsScrolling(isScrollingNow);
   };
-
-
+  
+  const onLike = () => {
+    if (conversation.isLiked) {
+      actions.conversation.dislike(conversation.id)
+        .then(() => {
+          Toast.show({
+            type: "success",
+            text: "Votre like a bien été retiré !"
+          })
+        })
+    } else {
+      actions.conversation.like(conversation.id)
+        .then(() => {
+          Toast.show({
+            type: "success",
+            text: "Votre like a bien été pris en compte !"
+          })
+        })
+    }
+  };
+  
   return (
     <ScrollView
       contentContainerStyle={styles.contentContainer}
@@ -185,4 +210,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Conversation;
+const stateToProps = (state: RootState) => ({
+  user:         getUser(state),
+});
+
+export default globalConnect(stateToProps)(Conversation);

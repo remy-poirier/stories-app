@@ -42,6 +42,47 @@ export default function storiesReducer(state = initialState, action: any): State
           return story;
         })
       };
+    case ActionTypes.Stories.ADD_TO_READLIST:
+      return {
+        ...state,
+        stories: state.stories.map((story) => {
+          if (story.id === action.payload.story.id) {
+            return {
+              ...story,
+              readList: action.payload.readList,
+            }
+          }
+          return story;
+        })
+      };
+    case ActionTypes.Stories.REMOVE_FROM_READLIST:
+      return {
+        ...state,
+        stories: state.stories.map((story) => {
+          if (story.id === action.payload.story.id) {
+            return {
+              ...story,
+              readList: action.payload.readList
+            }
+          }
+          
+          return story;
+        })
+      };
+    case ActionTypes.Stories.INCREMENT_NB_VIEWS:
+      return {
+        ...state,
+        stories: state.stories.map((story) => {
+          if (story.id === action.payload) {
+            return {
+              ...story,
+              nbReads: story.nbReads + 1,
+            }
+          }
+          
+          return story;
+        })
+      };
     default:
       return state;
   }
