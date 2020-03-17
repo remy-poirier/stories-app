@@ -8,6 +8,35 @@ import { LikeTypes } from "src/models/Like";
 import { guidGenerator, mapQuerySnapshotToStories } from "src/common/utils";
 import { Conversation, defaultConversation } from "src/conversation/Constants";
 
+const getAndIncrementStoryViews = (storyId: string, dispatch: any) => {
+  return db.collection("stories")
+    .doc(storyId)
+    .get()
+    .then((document) => {
+      const story = document.data() as Story;
+      return db.collection("stories")
+        .doc(storyId)
+        .set({
+          ...story,
+          nbReads: story.nbReads + 1
+        })
+        .then(() => {
+          dispatch({
+            type: ActionTypes.Stories.INCREMENT_NB_VIEWS,
+            payload: story.id
+          });
+          
+          return true;
+        })
+        .catch((error) => {
+          throw error;
+        })
+    })
+    .catch((error) => {
+      throw error;
+    })
+};
+
 const actions = {
 
   user: {
@@ -114,7 +143,7 @@ const actions = {
 
   stories: {
     fetch: () => (dispatch: any) => db.collection("stories")
-      .where("isVisible", "==", true)
+      .where("isVisible", "==", !__DEV__)
       .get()
       .then((querySnapshot) => {
         const stories = mapQuerySnapshotToStories(querySnapshot);
@@ -126,56 +155,35 @@ const actions = {
       }),
     
     defineAsRead: (storyId: string) => (dispatch: any) => {
-      // Check if user has already read story first
-      return db.collection("storyViews")
-        .where("userId", "==", auth.currentUser.uid)
-        .where("storyId", "==", storyId)
-        .get()
-        .then((querySnapshot) => {
-          if (querySnapshot.size > 0) {
-            // Story already read, simply do nothing
-            return true;
-          }
-  
-          return db.collection("storyViews")
-            .add({
-              id:      guidGenerator(),
-              storyId: storyId,
-              userId:  auth.currentUser.uid,
-            })
-            .then(() => {
-              db.collection("stories")
-                .doc(storyId)
-                .get()
-                .then((document) => {
-                  const story = document.data() as Story;
-                  return db.collection("stories")
-                    .doc(storyId)
-                    .set({
-                      ...story,
-                      nbReads: story.nbReads + 1
-                    })
-                    .then(() => {
-                      dispatch({
-                        type: ActionTypes.Stories.INCREMENT_NB_VIEWS,
-                        payload: story.id
-                      });
-    
-                      return true;
-                    })
-                    .catch((error) => {
-                      throw error;
-                    })
-                })
-                .catch((error) => {
-                  throw error;
-                })
-              
-            })
-            .catch((error) => {
-              throw error;
-            })
-        })
+      if (auth.currentUser) {
+        return db.collection("storyViews")
+          .where("userId", "==", auth.currentUser.uid)
+          .where("storyId", "==", storyId)
+          .get()
+          .then((querySnapshot) => {
+            if (querySnapshot.size > 0) {
+              // Story already read, simply do nothing
+              return true;
+            }
+      
+            return db.collection("storyViews")
+              .add({
+                id:      guidGenerator(),
+                storyId: storyId,
+                userId:  auth.currentUser.uid,
+              })
+              .then(() => {
+                return getAndIncrementStoryViews(storyId, dispatch)
+          
+              })
+              .catch((error) => {
+                throw error;
+              })
+          })
+      } else {
+        return getAndIncrementStoryViews(storyId, dispatch)
+      }
+      
     },
     
     addToList: (story: Story) => (dispatch: any) => {

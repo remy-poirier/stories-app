@@ -34,7 +34,7 @@ const Conversation = (props: Props) => {
   };
 
   const onTap = () => {
-    if (!isScrolling) {
+    if (!isScrolling && !isStoryEnded) {
       setDisplayedMessage((previousDisplayedMessage) => {
         if (previousDisplayedMessage + 1 < conversation.messages.length) {
           return previousDisplayedMessage + 1
