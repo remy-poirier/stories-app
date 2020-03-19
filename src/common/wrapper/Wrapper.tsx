@@ -87,9 +87,7 @@ const Wrapper = (props: Props) => {
   }, [fetchUpdates, isUpdating, fetchUser]);
 
   const isTabBarVisible = (route: any): boolean => {
-    const routeName = route.state
-      ? route.state.routes[route.state.index].name
-      : route.params?.screen || 'Home';
+    const routeName = route.state ? route.state.routes[route.state.index].name : (route.params?.screen || 'Home');
     return routeName !== "Story";
   };
 

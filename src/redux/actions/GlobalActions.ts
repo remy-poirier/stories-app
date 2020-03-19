@@ -25,7 +25,7 @@ const getAndIncrementStoryViews = (storyId: string, dispatch: any) => {
             type: ActionTypes.Stories.INCREMENT_NB_VIEWS,
             payload: story.id
           });
-          
+
           return true;
         })
         .catch((error) => {
@@ -40,7 +40,7 @@ const getAndIncrementStoryViews = (storyId: string, dispatch: any) => {
 const actions = {
 
   user: {
-    fetchUser: (email: string) => (dispatch: any) => {
+    fetchUser: (email: string): any => (dispatch: any) => {
       return db.collection("users")
         .where("email", "==", email)
         .get()
@@ -54,7 +54,7 @@ const actions = {
         })
     },
 
-    isUsernameAvailable: (username: string) => (dispatch: any) => {
+    isUsernameAvailable: (username: string): any => (dispatch: any) => {
       return db.collection("users")
         .where("displayName", "==", username)
         .get()
@@ -62,7 +62,7 @@ const actions = {
         .catch(() => true)
     },
 
-    signIn: (email: string, pwd: string, username: string) => (dispatch: any) => {
+    signIn: (email: string, pwd: string, username: string): any => (dispatch: any) => {
       return auth.createUserWithEmailAndPassword(
         email, pwd,
       )
@@ -88,7 +88,7 @@ const actions = {
         })
     },
 
-    logout: () => (dispatch: any) => auth.signOut()
+    logout: (): any => (dispatch: any) => auth.signOut()
       .then(() => {
         dispatch({
           type:    ActionTypes.User.STATUS_UPDATE,
@@ -97,14 +97,14 @@ const actions = {
         return true;
       }),
 
-    login: (email: string, password: string) => () => {
+    login: (email: string, password: string): any => () => {
       return auth.signInWithEmailAndPassword(email, password)
         .then(() => {
           return true;
         })
     },
 
-    getNbOfStoriesPublished: () => (dispatch: any) => {
+    getNbOfStoriesPublished: (): any => (dispatch: any) => {
       return db.collection("stories")
         .where("authorId", "==", auth.currentUser.uid)
         .where("isVisible", "==", true)
@@ -120,19 +120,19 @@ const actions = {
           throw error;
         })
     },
-    
-    getStoriesToReadLater: () => (dispatch: any) => {
+
+    getStoriesToReadLater: (): any => (dispatch: any) => {
       return db.collection("stories")
         .where("readList", "array-contains", auth.currentUser.uid)
         .get()
         .then((querySnapshot) => {
           const stories = mapQuerySnapshotToStories(querySnapshot);
-          
+
           dispatch({
             type: ActionTypes.User.RECEIVE_READLIST,
             payload: stories,
           });
-          
+
           return stories;
         })
         .catch((error) => {
@@ -142,7 +142,7 @@ const actions = {
   },
 
   stories: {
-    fetch: () => (dispatch: any) => db.collection("stories")
+    fetch: (): any => (dispatch: any) => db.collection("stories")
       .where("isVisible", "==", !__DEV__)
       .get()
       .then((querySnapshot) => {
@@ -153,8 +153,8 @@ const actions = {
         });
         return stories;
       }),
-    
-    defineAsRead: (storyId: string) => (dispatch: any) => {
+
+    defineAsRead: (storyId: string): any => (dispatch: any) => {
       if (auth.currentUser) {
         return db.collection("storyViews")
           .where("userId", "==", auth.currentUser.uid)
@@ -165,7 +165,7 @@ const actions = {
               // Story already read, simply do nothing
               return true;
             }
-      
+
             return db.collection("storyViews")
               .add({
                 id:      guidGenerator(),
@@ -174,7 +174,7 @@ const actions = {
               })
               .then(() => {
                 return getAndIncrementStoryViews(storyId, dispatch)
-          
+
               })
               .catch((error) => {
                 throw error;
@@ -183,10 +183,10 @@ const actions = {
       } else {
         return getAndIncrementStoryViews(storyId, dispatch)
       }
-      
+
     },
-    
-    addToList: (story: Story) => (dispatch: any) => {
+
+    addToList: (story: Story): any => (dispatch: any) => {
       return db.collection("readList")
         .add({
           id:      guidGenerator(),
@@ -216,8 +216,8 @@ const actions = {
             })
         })
     },
-    
-    removeFromList: (story: Story) => (dispatch: any) => {
+
+    removeFromList: (story: Story): any => (dispatch: any) => {
       return db.collection("readList")
         .where("userId", "==", auth.currentUser.uid)
         .where("storyId", "==", story.id)
@@ -243,7 +243,7 @@ const actions = {
                         readList,
                       }
                     });
-                    
+
                     return true
                   })
                   .catch((error) => {
@@ -256,7 +256,7 @@ const actions = {
   },
 
   conversation: {
-    get: (storyId: string) => (dispatch: any) => db.collection("stories")
+    get: (storyId: string): any => (dispatch: any) => db.collection("stories")
       .doc(storyId)
       .get()
       .then((doc) => {
@@ -303,13 +303,13 @@ const actions = {
 
       }),
 
-    reset: () => (dispatch: any) => {
+    reset: (): any => (dispatch: any) => {
       return dispatch({
         type: ActionTypes.Conversation.RESET,
       })
     },
 
-    like: (storyId: string) => (dispatch: any) => {
+    like: (storyId: string): any => (dispatch: any) => {
       return db.collection("likes")
         .add({
           id:      guidGenerator(),
@@ -341,7 +341,7 @@ const actions = {
         })
     },
 
-    dislike: (storyId: string) => (dispatch: any) => {
+    dislike: (storyId: string): any => (dispatch: any) => {
       return db.collection("likes")
         .where("storyId", "==", storyId)
         .where("userId", "==", auth.currentUser.uid)
