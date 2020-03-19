@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Message as MessageInterface, MessageSender } from "src/message/Constants";
 import { Conversation as ConversationInterface } from "src/conversation/Constants";
 import Message from "src/message/Message";
-import { ScrollView, StyleSheet } from "react-native";
+import { Dimensions, ScrollView, StyleSheet } from "react-native";
 import { Body, Button, Icon, Text, Toast, View } from "native-base";
 import FadeInView from "src/common/fadeInView/FadeInView";
 import { appCommonStyles } from "src/common/styles/styles";
@@ -77,7 +77,7 @@ const Conversation = (props: Props) => {
   const onScroll = (isScrollingNow: boolean) => () => {
     setIsScrolling(isScrollingNow);
   };
-  
+
   const onLike = () => {
     if (conversation.isLiked) {
       actions.conversation.dislike(conversation.id)
@@ -97,7 +97,7 @@ const Conversation = (props: Props) => {
         })
     }
   };
-  
+
   return (
     <ScrollView
       contentContainerStyle={styles.contentContainer}
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     flex: 1,
-    width: "100%",
+    width: Dimensions.get("window").width,
     paddingHorizontal: 8,
   },
 
@@ -173,6 +173,7 @@ const styles = StyleSheet.create({
   scrollView: {
     display: "flex",
     flexDirection: "column",
+    width: "100%",
   },
 
   endContainer: {

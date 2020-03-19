@@ -88,16 +88,16 @@ const StoriesList = (props: Props) => {
     >
       {isFetching &&
         <View
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              alignSelf: "center",
-              marginTop: 16,
-              flex: 1,
-              alignContent: "center",
-              display: "flex",
-              width: Dimensions.get("window").width
-            }}
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            alignSelf: "center",
+            marginTop: 16,
+            flex: 1,
+            alignContent: "center",
+            display: "flex",
+            width: Dimensions.get("window").width
+          }}
         >
           <Spinner style={{justifyContent: "center", alignItems: "center"}} />
         </View>
@@ -115,6 +115,7 @@ const StoriesList = (props: Props) => {
             />
             <View
               style={styles.storyCardOverflow}
+              onTouchEnd={onClick(story.id)}
             >
               <Text
                 style={styles.storyTitle}
@@ -181,6 +182,7 @@ const StoriesList = (props: Props) => {
                 type="FontAwesome5"
                 style={{
                   ...styles.cardActionsItemIcon,
+                  color: "white",
                 }}
               />
     

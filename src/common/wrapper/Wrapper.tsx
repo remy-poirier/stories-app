@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Icon, Spinner, View, Text } from "native-base";
+import React, { useEffect, useMemo, useState } from 'react';
+import { Icon, Spinner, View, Text, Toast } from "native-base";
 import HomeScreen from "src/screens/home/HomeScreen";
 import AboutScreen from "src/screens/about/AboutScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -10,6 +10,8 @@ import { Routes } from "src/redux/actions/GlobalActions";
 import { auth } from "src/conf/firebase";
 import AccountScreen from "src/screens/account/AccountScreen";
 import { appTheme } from "src/common/styles/styles";
+import { Updates } from "expo";
+import { registerPushNotifications } from "src/conf/config";
 
 const Tab = createBottomTabNavigator();
 
@@ -19,9 +21,42 @@ interface Props {
 
 const Wrapper = (props: Props) => {
   const { actions } = props;
+  const [fetchUpdates, setFetchUpdates] = useState<boolean>(true);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [fetchUser, setFetchUser] = useState<boolean>(true);
 
   useEffect(() => {
+    if (__DEV__) {
+        setFetchUpdates(false);
+    } else {
+      Updates.checkForUpdateAsync()
+        .then((update) => {
+          if (update.isAvailable) {
+            setIsUpdating(true);
+            setFetchUpdates(false);
+            Updates.fetchUpdateAsync()
+              .then((updateResult) => {
+                return Updates.reloadFromCache()
+                  .then(() => {
+                    setIsUpdating(false);
+                    Toast.show({
+                      text: "Mise à jour effectuée avec succès",
+                      type: "success",
+                    })
+                  })
+              })
+          } else {
+            setFetchUpdates(false);
+            setIsUpdating(false);
+          }
+        })
+        .catch(() => {
+          setFetchUpdates(false);
+          setIsUpdating(false);
+        });
+    }
+
+    registerPushNotifications()
 
     auth.onAuthStateChanged((user) => {
       if (user) {
@@ -34,6 +69,23 @@ const Wrapper = (props: Props) => {
     });
   }, []);
 
+  const isAppLoading: boolean = useMemo(() => {
+    return fetchUpdates || isUpdating || fetchUser;
+  }, [fetchUpdates, isUpdating, fetchUser]);
+
+  const getLoadingMessage: string = useMemo(() => {
+    if (fetchUpdates) {
+      return "Recherche de mise à jour..."
+    }
+
+    if (isUpdating) {
+      return "Téléchargement de la mise à jour..."
+    }
+
+    return "Chargement de l'application...";
+
+  }, [fetchUpdates, isUpdating, fetchUser]);
+
   const isTabBarVisible = (route: any): boolean => {
     const routeName = route.state
       ? route.state.routes[route.state.index].name
@@ -41,11 +93,11 @@ const Wrapper = (props: Props) => {
     return routeName !== "Story";
   };
 
-  if (fetchUser) {
+  if (isAppLoading) {
     return (
       <View style={styles.loadingView}>
         <Spinner color={appTheme.primaryColor}/>
-        <Text style={styles.loadingText}>Chargement de l'application...</Text>
+        <Text style={styles.loadingText}>{getLoadingMessage}</Text>
       </View>
     )
   }

@@ -1,3 +1,8 @@
+import * as Permissions from 'expo-permissions';
+import { PermissionStatus } from 'expo-permissions';
+import { Notifications } from "expo";
+import { db } from "./firebase";
+
 export interface Params {
   isProd: boolean;
 }
@@ -15,3 +20,22 @@ const getParams = (): Params => {
 };
 
 export const config = getParams();
+
+export const registerPushNotifications = () => {
+
+  return Permissions.askAsync(Permissions.NOTIFICATIONS)
+    .then((response) => {
+      if (response.status !== PermissionStatus.GRANTED){
+        console.log("notifications are forbidden");
+        return;
+      }
+
+      return Notifications.getExpoPushTokenAsync()
+        .then((token) => {
+          return db.collection("pushTokens")
+            .add({
+              token,
+            })
+        })
+    })
+};

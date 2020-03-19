@@ -24,12 +24,12 @@ const ProfileScreen = (props: Props) => {
   const {
     user, actions, navigation, nbOfPublishedStories, readList,
   } = props;
-  
+
   const [fetchData, setFetchData] = useState<boolean>(true);
   
   useEffect(() => {
     setFetchData(true);
-    
+
     Promise.all([
       actions.user.getNbOfStoriesPublished(),
       actions.user.getStoriesToReadLater()
@@ -41,18 +41,18 @@ const ProfileScreen = (props: Props) => {
         setFetchData(false)
       })
   }, []);
-  
+
   const onLogout = () => {
     actions.user.logout()
       .then(() => {
         navigation.replace("Authentication");
       })
   };
-  
+
   const onReadListClick = () => {
     navigation.navigate("ReadList")
   };
-  
+
   return (
     <View
       style={{
@@ -60,7 +60,7 @@ const ProfileScreen = (props: Props) => {
         ...fetchData ? styles.loadingContainer : null,
       }}
     >
-    
+
       {!fetchData &&
       <>
         <Text style={appCommonStyles.text}>Nom d'utilisateur: {user ? user.displayName : ""}</Text>
@@ -92,12 +92,12 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "bold",
   },
-  
+
   cardItemText: {
     textAlign: "center",
     color: "white",
   },
-  
+
   loadingContainer: {
     justifyContent: "center",
     textAlign: "center",
@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
   }
-  
+
 });
 
 const stateToProps = (state: RootState) => ({

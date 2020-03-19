@@ -18,16 +18,16 @@ interface Props {
 
 const StoryComponent = (props: Props) => {
   const { conversationId, onBack, actions, conversation } = props;
-  
+
   const [fetchConversation, setFetchConversation] = useState<boolean>(true);
-  
+
   useEffect(() => {
     setFetchConversation(true);
     actions.conversation.reset();
     actions.conversation.get(conversationId)
       .then(() => setFetchConversation(false))
   }, []);
-  
+
   return (
     <View style={styles.bg}>
       {fetchConversation && <Spinner />}
@@ -45,10 +45,9 @@ const styles = StyleSheet.create({
   text: {
     color: "white",
   },
-  
+
   bg: {
     flex: 1,
-    width: "100%",
     justifyContent: "flex-start",
     backgroundColor: "#121212",
     paddingVertical: 8,
