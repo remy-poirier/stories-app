@@ -30,11 +30,21 @@ export const registerPushNotifications = () => {
         return;
       }
 
+      Notifications.setBadgeNumberAsync(0);
+
       return Notifications.getExpoPushTokenAsync()
         .then((token) => {
           return db.collection("pushTokens")
-            .add({
-              token,
+            .doc(token)
+            .get()
+            .then((document) => {
+              if (!document.exists) {
+                return db.collection("pushTokens")
+                  .doc(token)
+                  .set({
+                    token
+                  })
+              }
             })
         })
     })

@@ -7,7 +7,7 @@ import globalConnect from "src/redux/actions/utils";
 import { Routes } from "src/redux/actions/GlobalActions";
 import { RootState } from "src/redux/reducer/mainReducer";
 import { getConversation } from "src/redux/selectors/conversationSelector";
-import StoryComponent from "../../common/StoryComponent";
+import StoryComponent from "src/common/StoryComponent";
 
 type StoryScreenNavigationProps = StackNavigationProp<RootStackParamList, "Story">;
 type StoryScreenRouteProps = RouteProp<RootStackParamList, "Story">;
@@ -22,7 +22,7 @@ interface Props {
 
 const StoryScreen = (props: Props) => {
   const { route, conversation, navigation } = props;
-  
+
   useEffect(() => {
     navigation.setOptions({
       title: conversation.name
@@ -32,7 +32,7 @@ const StoryScreen = (props: Props) => {
   const onGoBackToHome = () => {
     navigation.navigate("Home")
   };
-  
+
   return (
     <StoryComponent
       conversationId={route.params.storyId}
