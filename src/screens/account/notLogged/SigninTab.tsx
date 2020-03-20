@@ -201,6 +201,9 @@ const styles = StyleSheet.create({
   input: {
     color: "white",
     borderWidth: 2,
+    borderTopColor: "transparent",
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
     borderBottomColor: "white",
     height: 40,
   },

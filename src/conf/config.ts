@@ -49,3 +49,10 @@ export const registerPushNotifications = () => {
         })
     })
 };
+
+export const areNotificationsEnabled = (): Promise<boolean> => {
+  return Permissions.askAsync(Permissions.NOTIFICATIONS)
+    .then((response) => {
+      return response.status === PermissionStatus.GRANTED;
+    })
+}
